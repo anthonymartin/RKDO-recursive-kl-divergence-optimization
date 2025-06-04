@@ -1,6 +1,5 @@
 # RKDO - Recursive KL Divergence Optimization
 
-
 This repository contains the official implementation of Recursive KL Divergence Optimization (RKDO), a dynamic framework for representation learning that generalizes neighborhood-based KL minimization methods.
 
 ## Overview
@@ -22,6 +21,22 @@ This visualization blends insights from RKDO theory with Amari's information geo
 
 The visualization captures how RKDO's recursive coupling between student and teacher distributions leads to their progressive alignment over time.
 
+### RKDO-Coupled Self-Organizing Maps
+
+![SOM Comparison](./som_rkdo/output/combined_som_comparison.gif)
+
+**Figure: Comparison of Standard vs RKDO-Coupled Self-Organizing Map Evolution**
+
+This side-by-side animation compares two Self-Organizing Map (SOM) approaches learning from the same evolving spatiotemporal data over 200 time steps. Each frame shows a 10×10 grid of learned prototypes, where each cell displays a 3×3 pattern representing the SOM's internal representation of local spatial features. Colors indicate different state values in the underlying dynamic system.
+
+**Left (Standard SOM):** Uses traditional exponential decay schedules for learning rate and neighborhood radius, following a predetermined adaptation timeline regardless of input distribution changes.
+
+**Right (RKDO-Coupled SOM):** Employs Recursive Kullback-Leibler Divergence Optimization, where the learning rate adapts dynamically based on the KL divergence between the SOM's prior activation distribution and current input-driven activations. This creates a feedback loop where learning intensity responds to the novelty of input patterns.
+
+The visual differences reveal how adaptive learning schedules (RKDO) can produce different prototype organization compared to fixed exponential decay, particularly when the underlying data distribution shifts over time. The RKDO approach demonstrates more responsive adaptation to changes in the evolving spatial patterns, while the standard approach follows a rigid learning schedule independent of input characteristics.
+
+*The notebook for this visualization is found in `./som_rkdo/som_rkdo.ipynb`*
+
 ## Key Findings
 
 Our experiments demonstrate that RKDO offers dual efficiency advantages:
@@ -35,6 +50,7 @@ Our experiments demonstrate that RKDO offers dual efficiency advantages:
 - `RKDO_benchmark.ipynb` and `RKDO_benchmark_latest.ipynb`: Notebooks containing the experiments from the paper
 - `visualizations/kaleidoscope.py`: Script for generating the kaleidoscopic visualizations
 - `visualizations/data`: Directory containing output visualizations and experimental visualizations
+- `som_rkdo/som_rkdo.ipynb`: Notebook demonstrating RKDO application to Self-Organizing Maps
 
 ## Installation
 
@@ -63,6 +79,13 @@ cd visualizations
 python kaleidoscope.py
 ```
 
+To explore RKDO-coupled Self-Organizing Maps:
+
+```python
+# Run the SOM notebook
+jupyter notebook som_rkdo/som_rkdo.ipynb
+```
+
 ## Method
 
 RKDO formalizes representation learning as:
@@ -72,8 +95,6 @@ $$L^{(t)} = \frac{1}{n}\sum_{i=1}^{n}D_{KL}(p^{(t)}(\cdot|i)\|q^{(t)}(\cdot|i))$
 where $p^{(t)}(\cdot|i)$ is the supervisory distribution and $q^{(t)}(\cdot|i)$ is the learned neighborhood distribution, both recursively defined:
 
 $$p^{(t)} = (1 - \alpha) \cdot p^{(t-1)} + \alpha \cdot q^{(t-1)}$$
-
-
 
 This recursive formulation empirically creates a more efficient optimization trajectory, particularly in early training stages.
 
